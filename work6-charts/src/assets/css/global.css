@@ -1,0 +1,23 @@
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;  
+}
+
+html,body,#app {
+	height: 100%;
+	width: 100%;
+	background: rgb(197, 196, 196);
+	/* background: rgb(190, 189, 189); */
+}
+.chart,
+.chart_view {
+  height: 100%;
+	width: 100%;
+	padding: 5px;
+}
+canvas{
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 3px 3px 3px rgb(231, 231, 231);
+}
