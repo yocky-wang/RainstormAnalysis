@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import {ref,reactive, onMounted, defineExpose} from 'vue'
+import {ref,reactive, onMounted, onUnmounted} from 'vue'
 import * as echarts from 'echarts'
 
 const cityBarRef = ref(null)
@@ -30,16 +30,14 @@ const baseOption = {
     bottom: "5%",
     containLabel: true,
   },
-  xAxis: [{ type: "value", name: "内涝次数", nameLocation: 'center' }],
+  xAxis: [{ type: "value", name: "内涝次数", nameLocation: 'start' }],
   yAxis: [{ type: "category", scale: true }],
   series: [
     {
       name: "内涝次数",
       type: "bar",
       label:{
-              // color: '#000000',
               show: true,
-              // formatter: (params)=>{return 1}
             },
       itemStyle: {
         borderRadius: [0, 5, 5, 0],
@@ -53,32 +51,44 @@ const baseOption = {
 };
 const dataset = {
   dimensions: ["cityName", "count"],
-  source: [
-    { cityName: "name1", count: 150 },
-    { cityName: "name2", count: 120 },
-    { cityName: "name3", count: 100 },
-    { cityName: "name4", count: 80 },
-    { cityName: "name5", count: 20 },
-    { cityName: "name6", count: 20 },
-  ],
 }
-const data = ref(null)
+// data
+let cityData = []
+const getCity = async ()=>{
+  const res = await fetch('/data/json/cityRain.json').then(res=>res.json())
+  cityData = res.data.map((item)=>{
+    return {cityName: item.cityName, count: item.count}
+  })
+  .sort((a,b)=>b.count-a.count)
+  return cityData.slice(0,6)
+}
+// loop
+let timeID
+const change = (chart)=>{
+  const len = 6
+  let i = 0
+  timeID = setInterval(()=>{
+    console.log(i)
+    dataset.source = cityData.slice(i,i+6)
+    chart.value.setOption({dataset})
+    i +=6
+    if(i+6>cityData.length){
+      i = 0
+    }  
+  },2000)
+}
 onMounted(async()=>{
   const obj = await fetch('/data/json/walden.json').then(res=>{console.log(res);return res.json()}).then(obj=>obj)
   echarts.registerTheme('walden', obj)
   chart.value = echarts.init(cityBarRef.value, 'walden')
   chart.value.setOption(baseOption)
+  dataset.source = await getCity()
   chart.value.setOption({dataset})
+  change(chart)
   window.addEventListener('resize',()=>{chart.value.resize()})
 })
-const resize = ()=>{
-    chart.value.setOption(baseOption)
-    chart.value.setOption({dataset})
-    chart.value.resize()
-  }
-
-defineExpose({
-  resize
+onUnmounted(()=>{
+  clearInterval(timeID)
 })
 </script>
 

@@ -4,6 +4,7 @@ import CityBar from '../views/CityBarView'
 import Map from '../views/MapView'
 import YearLine from '../views/YearLineView'
 import ScorePie from '../views/ScorePieView'
+import MonthBar from '../views/MonthBarView'
 
 const routes = [
   {
@@ -15,6 +16,7 @@ const routes = [
   {path: '/map', component: Map},
   {path: '/yaerline', component: YearLine},
   {path: '/scorepie', component: ScorePie},
+  {path: '/monthbar', component: MonthBar},
 ]
 
 const router = createRouter({
