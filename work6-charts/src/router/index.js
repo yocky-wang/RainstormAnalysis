@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import CityBar from '../views/CityBarView'
 import Map from '../views/MapView'
+import YearLine from '../views/YearLineView'
 
 const routes = [
   {
@@ -11,6 +12,7 @@ const routes = [
   },
   {path: '/cityBar', component: CityBar},
   {path: '/map', component: Map},
+  {path: '/yaerline', component: YearLine},
 ]
 
 const router = createRouter({
