@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+import json
 
 def raintime(df):
     month_list = [0]*12
@@ -22,26 +23,35 @@ def raintime(df):
         print('error:', e)
     return month_list, year_list
 def rainfenxi(dfs):
+    json1 = {"data": []}
     city_month_list = []
+    city_year_list = []
     city_count_dic = {}
     dfyear = [0] * 13  # 2010-2022
     for cities in [cities1, cities2, cities3]:
         dfmonth = [0] * 12
+        year = [0] * 13
         for city in cities:
             print(city)
             df_item = dfs[dfs['所在城市'] == city]
             df_item_month, df_item_year = raintime(df_item)
+            dic = {"cityName": city, "month": df_item_month, "year": df_item_year, "count": sum(df_item_month)}
+            json1['data'].append(dic)
             print(df_item_month)
             print(df_item_year)
             for i in range(0, 12):
                 dfmonth[i] += df_item_month[i]
             for i in range(0,13):
                 dfyear[i] += df_item_year[i]
-            city_count_dic[city] = sum(dfmonth)
+                year[i] += df_item_year[i]
+            city_count_dic[city] = sum(df_item_month)
         # print(dfmonth)
 
         city_month_list.append(dfmonth)
-    return city_month_list, city_count_dic, dfyear
+        city_year_list.append(year)
+    json_dict_2 = json.dumps(json1, ensure_ascii=False)
+    print(json_dict_2)
+    return city_month_list, city_count_dic, dfyear, city_year_list
 def draw_renwu1(citiesname, month_list):
     month_label = [str(i) + '月' for i in range(1, 13)]
     x = month_label
@@ -99,11 +109,12 @@ if __name__ == '__main__':
         dflist.append(df)
     dfs = pd.concat([i for i in dflist])
     dfs['暴雨内涝开始时间'] = dfs['暴雨内涝开始时间'].astype(str)
-    renwu1_month, renwu4_city, renwu5_year = rainfenxi(dfs)
+    renwu1_month, renwu4_city, renwu5_year, year = rainfenxi(dfs)
     # 任务1
     print('任务1：')
     for i in range(0,3):
         print(cities_name[i], '：', renwu1_month[i])
+        print(cities_name[i], '：', year[i])
         draw_renwu1(cities_name[i], renwu1_month[i])
     # 任务2
     renwu2_list = [0]*12
