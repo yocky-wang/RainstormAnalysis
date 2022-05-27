@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 def weight(x):
     x1 = np.prod(x, axis=1)**(1/x.shape[0])
@@ -72,3 +73,9 @@ if __name__ == '__main__':
     print(res)
     print(A1.sum()+A2.sum()+A3.sum())
     draw(res, Alist)
+    scoreDic = {"data": []}
+    for i in range(0,11):
+        dic = {"value": res[i], "name": Alist[i]}
+        scoreDic['data'].append(dic)
+    scoreJson = json.dumps(scoreDic, ensure_ascii=False)
+    print(scoreJson)
