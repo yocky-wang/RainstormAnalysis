@@ -21,7 +21,7 @@ const baseOption = {
     },
   },
   legend: {
-    data: ['京津冀城市群', '粤港澳大湾区城市', '长三角城市群']
+    data: ['京津冀城市群', '粤港澳城市群', '长三角城市群']
   },
   grid: {
     left: "3%",
@@ -59,19 +59,24 @@ const baseOption = {
   ],
 };
 const dataset = {
-  dimensions: ["year", "京津冀城市群", "粤港澳大湾区城市", "长三角城市群"],
-  source: [
-    { year: 2010, '京津冀城市群': 20, '粤港澳大湾区城市': 25, '长三角城市群': 30 },
-    { year: 2011, '京津冀城市群': 20, '粤港澳大湾区城市': 35, '长三角城市群': 30 },
-    { year: 2012, '京津冀城市群': 20, '粤港澳大湾区城市': 25, '长三角城市群': 30 },
-    { year: 2013, '京津冀城市群': 20, '粤港澳大湾区城市': 25, '长三角城市群': 32 },
-    { year: 2014, '京津冀城市群': 20, '粤港澳大湾区城市': 25, '长三角城市群': 32 },
-    { year: 2015, '京津冀城市群': 10, '粤港澳大湾区城市': 15, '长三角城市群': 32 },
-  ],
+  dimensions: ["year", "京津冀城市群", "粤港澳城市群", "长三角城市群"],
+}
+// data
+const getYear = async ()=>{
+  const data = await fetch('/data/json/yearLine.json').then(res=>res.json())
+  return new Array(13).fill(0).map((item,index)=>{
+    return {
+      year:`${2010+index}`,
+      '京津冀城市群': data['京津冀城市群'][index],
+      '粤港澳城市群': data['粤港澳城市群'][index],
+      '长三角城市群': data['长三角城市群'][index]
+    }
+  })
 }
 onMounted(async()=>{
   const chart = echarts.init(yearLineRef.value)
   chart.setOption(baseOption)
+  dataset.source = await getYear()
   chart.setOption({dataset})
   window.addEventListener('resize',()=>{chart.resize()})
 })

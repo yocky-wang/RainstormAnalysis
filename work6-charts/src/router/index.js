@@ -14,7 +14,7 @@ const routes = [
   },
   {path: '/cityBar', component: CityBar},
   {path: '/map', component: Map},
-  {path: '/yaerline', component: YearLine},
+  {path: '/yearline', component: YearLine},
   {path: '/scorepie', component: ScorePie},
   {path: '/monthbar', component: MonthBar},
 ]

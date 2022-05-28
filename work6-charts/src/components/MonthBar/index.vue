@@ -3,12 +3,18 @@
 </template>
 
 <script setup>
-import {ref,reactive, onMounted} from 'vue'
+import {ref,reactive, onMounted, defineProps, toRefs, watch } from 'vue'
 import * as echarts from 'echarts'
 
+const props = defineProps({
+  cityName: {
+    type: String,
+    default: '南京'
+  }
+})
 const monthBarRef = ref(null)
 const chart = ref(null)
-const cityName = ref('南京')
+const {cityName} = toRefs(props)
 const cityData = ref([])
 const baseOption = {
   title: {
@@ -55,7 +61,12 @@ const getCityMonth = (name)=>{
   const {month} = cityData.value.find((item)=>item.cityName==name)
   return month.map((item,index)=>{return {month: `${index+1}月`, count: item}})
 }
-const data = ref(null)
+watch(cityName,(newValue)=>{
+  baseOption.title.text = `${newValue}城市内涝-月份图`
+  dataset.source = getCityMonth(newValue)
+  chart.value.setOption(baseOption)
+  chart.value.setOption({dataset})
+})
 onMounted(async()=>{
   chart.value = echarts.init(monthBarRef.value)
   cityData.value = await getData()

@@ -87,7 +87,10 @@ const changeMap = (chart)=>{
     chart.setOption(baseOption,true)
     chart.setOption({ series: dataSeries })
     chart.setOption({ geo: {map: `${e.name}`} })
-    emits('getCityName',e.name)
+    //点击散点
+    if(e.componentSubType === 'effectScatter'){
+      emits('getCityName',e.name)
+    }
   })
 }
 onMounted(async () => {
